@@ -14,9 +14,10 @@ ul.entityreference-dragdrop li {
   margin-top:4px;
   margin-bottom:4px;
   font-size: 1.2em; 
-  width: 280px;
+  width: 270px;
   background: white;
   cursor: move;
+  border: 1px solid lightgray;
 }
 
 .entityreference-dragdrop-clear {
