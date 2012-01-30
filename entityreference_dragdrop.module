@@ -55,7 +55,7 @@ function entityreference_dragdrop_field_widget_form(&$form, &$form_state, $field
   $markup_selected  .= '</ul>';
   
   $element += array(
-    '#type' => 'textfield',
+    '#type' => 'hidden',
     '#default_value' => implode(',',array_keys($selected)),
     '#element_validate' => array('entityreference_dragdrop_element_validate'),
     '#suffix' => $markup_available.$markup_selected.'<div class="entityreference-dragdrop-clear"></div>',
