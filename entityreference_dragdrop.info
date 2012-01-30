@@ -1,0 +1,5 @@
+name = Entity Reference Drag & Drop
+description = Provides a nice drag and drop widget
+package = Fields
+core = 7.x
+

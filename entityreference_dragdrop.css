@@ -1,0 +1,24 @@
+ul.entityreference-dragdrop { 
+  list-style-type: none; 
+  float: left; 
+  background: #eee; 
+  width: 300px;
+  height: 400px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  padding: 0;
+}
+
+ul.entityreference-dragdrop li { 
+  padding: 5px; 
+  margin-top:4px;
+  margin-bottom:4px;
+  font-size: 1.2em; 
+  width: 280px;
+  background: white;
+  cursor: move;
+}
+
+.entityreference-dragdrop-clear {
+  clear:both;
+}
