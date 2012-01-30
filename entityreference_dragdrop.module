@@ -1,68 +1,11 @@
 <?php
 /**
  * @file
- * An example field using the Field Types API.
+ * Provides a Drag & Drop widget for entity-reference fields
  */
-
-/**
- * @defgroup entityreference_dragdrop Example: Field Types API
- * @ingroup examples
- * @{
- * Examples using Field Types API.
- *
- * This is updated from Barry Jaspan's presentation at Drupalcon Paris,
- * @link http://acquia.com/community/resources/acquia-tv/intro-field-api-module-developers Video Presentation @endlink
- *
- * Providing a field requires:
- * - Defining a field:
- *   - hook_field_info()
- *   - hook_field_schema()
- *   - hook_field_validate()
- *   - hook_field_is_empty()
- *
- * - Defining a formatter for the field (the portion that outputs the field for
- *   display):
- *   - hook_field_formatter_info()
- *   - hook_field_formatter_view()
- *
- * - Defining a widget for the edit form:
- *   - hook_field_widget_info()
- *   - hook_field_widget_form()
- *
- * Our module defines the field in entityreference_dragdrop_field_info(),
- * entityreference_dragdrop_field_validate() and entityreference_dragdrop_field_is_empty().
- * entityreference_dragdrop_field_schema() is implemented in entityreference_dragdrop.install.
- *
- * Our module sets up a formatter in entityreference_dragdrop_field_formatter_info() and
- * entityreference_dragdrop_field_formatter_view(). These are the API hooks that present
- * formatted and themed output to the user.
-
- * And finally, our module defines the widet in
- * entityreference_dragdrop_field_widget_info() and entityreference_dragdrop_field_widget_form().
- * The widget is the form element used to receive input from the user
- * when the field is being populated.
- *
- * @see field_types
- * @see field
- */
-
-/***************************************************************
- * Field Type API hooks
- ***************************************************************/
 
 /**
  * Implements hook_field_widget_info().
- *
- * Three widgets are provided.
- * - A simple text-only widget where the user enters the '#ffffff'.
- * - A 3-textfield widget that gathers the red, green, and blue values
- *   separately.
- * - A farbtastic colorpicker widget that chooses the value graphically.
- *
- * These widget types will eventually show up in hook_field_widget_form,
- * where we will have to flesh them out.
- *
- * @see entityreference_dragdrop_field_widget_form()
  */
 function entityreference_dragdrop_field_widget_info() {
   return array(
@@ -78,22 +21,6 @@ function entityreference_dragdrop_field_widget_info() {
 
 /**
  * Implements hook_field_widget_form().
- *
- * hook_widget_form() is where Drupal tells us to create form elements for
- * our field's widget.
- *
- * We provide one of three different forms, depending on the widget type of
- * the Form API item provided.
- *
- * The 'entityreference_dragdrop_colorpicker' and 'entityreference_dragdrop_text' are essentially
- * the same, but entityreference_dragdrop_colorpicker adds a javascript colorpicker
- * helper.
- *
- * entityreference_dragdrop_3text displays three text fields, one each for red, green,
- * and blue. However, the field type defines a single text column,
- * rgb, which needs an HTML color spec. Define an element validate
- * handler that converts our r, g, and b fields into a simulated single
- * 'rgb' form element.
  */
 function entityreference_dragdrop_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
   // If we have more than one element per page, this element-counter keeps them seperated
@@ -147,8 +74,7 @@ function entityreference_dragdrop_field_widget_form(&$form, &$form_state, $field
 
 
 /**
- * Validate the individual fields and then convert them into a single HTML RGB
- * value as text.
+ * Formats the value array properly
  */
 function entityreference_dragdrop_element_validate($element, &$form_state) {
   $value = array();
