@@ -30,7 +30,7 @@ function entityreference_dragdrop_field_widget_form(&$form, &$form_state, $field
 
   drupal_add_library('system', 'ui.sortable');
 
-  $handler = entityreference_get_handler($field);
+  $handler = entityreference_get_selection_handler($field, $instance);
   $options = $handler->getReferencableEntities();
 
   // Build an array of selected items in id=>labal format
