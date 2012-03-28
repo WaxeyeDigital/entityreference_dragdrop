@@ -7,8 +7,8 @@ jQuery(document).ready(function($) {
   });
 
   $select.sortable({
-	  connectWith: "ul.entityreference-dragdrop",
-	  update: entityreference_dragdrop_update
+    connectWith: "ul.entityreference-dragdrop",
+    update: entityreference_dragdrop_update
   });
 });
 

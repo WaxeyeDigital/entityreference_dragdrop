@@ -4,4 +4,3 @@ package = Fields
 core = 7.x
 dependencies[] = entityreference
 dependencies[] = jquery_update
-
