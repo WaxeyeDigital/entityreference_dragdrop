@@ -46,8 +46,9 @@ function entityreference_dragdrop_field_widget_form(&$form, &$form_state, $field
   $markup_available = '<ul data-ec="' . $ec . '" class="entityreference-dragdrop entityreference-dragdrop-available">';
   foreach ($options as $bundle => $entities) {
     foreach ($entities as $id => $label) {
-      if (!array_key_exists($id, $selected)) 
-				$markup_available .= '<li data-ec="' . $ec . '" data-id="' . $id . '">' . $label . '</li>';
+      if (!array_key_exists($id, $selected)) {
+        $markup_available .= '<li data-ec="' . $ec . '" data-id="' . $id . '">' . $label . '</li>';
+			}
     }
   }
   $markup_available .= '</ul>';
@@ -55,14 +56,14 @@ function entityreference_dragdrop_field_widget_form(&$form, &$form_state, $field
   // Build HTML to represent selected items.
   $markup_selected = '<ul data-ec="' . $ec . '" class="entityreference-dragdrop entityreference-dragdrop-selected">';
   foreach ($selected as $id => $label) {
-    $markup_selected .=  '<li data-ec="' . $ec . '" data-id="' . $id . '">' . $label . '</li>';
+    $markup_selected .= '<li data-ec="' . $ec . '" data-id="' . $id . '">' . $label . '</li>';
   }
   $markup_selected  .= '</ul>';
 
   $label = '<div class="entityreference-dragdrop-label">' . $instance['label'] . '</div>';
   $message = $field['cardinality'] == -1 ? '' : '<div class="entityreference-dragdrop-message" data-ec="' . $ec . '">' . t("This field cannot hold more than @card values.", array('@card' => $field['cardinality'])) . '</div>';
 
-	$header = '<div><div class="entityreference-dragdrop-list-header">' . t('Available entities') . '</div><div class="entityreference-dragdrop-list-header">' . t('Selected entities') . '</div></div>';
+  $header = '<div><div class="entityreference-dragdrop-list-header">' . t('Available entities') . '</div><div class="entityreference-dragdrop-list-header">' . t('Selected entities') . '</div></div>';
   $element += array(
     '#type' => 'hidden',
     '#default_value' => implode(',', array_keys($selected)),
