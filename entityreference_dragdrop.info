@@ -1,5 +1,5 @@
 name = Entity Reference Drag & Drop
-description = Provides a nice drag and drop widget
+description = Provides a nice drag and drop widget for entityreference fields.
 package = Fields
 core = 7.x
 dependencies[] = entityreference

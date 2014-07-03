@@ -1,12 +1,14 @@
-ul.entityreference-dragdrop {
+.form-wrapper ul.entityreference-dragdrop {
   list-style-type: none;
-  float: left;
+  display: inline-block;
   background: #eee;
   width: 300px;
   height: 400px;
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
   padding: 0;
+  margin: 0 10px 0 0;
+	border: 1px solid gray;
 }
 
 ul.entityreference-dragdrop li {
@@ -14,12 +16,27 @@ ul.entityreference-dragdrop li {
   margin-top:4px;
   margin-bottom:4px;
   font-size: 1.2em;
-  width: 270px;
   background: white;
   cursor: move;
-  border: 1px solid lightgray;
+  border-bottom: 1px solid gray;
+	border-top: 1px solid gray;
+  list-style-type: none;
+}
+
+ul.entityreference-dragdrop li.ui-sortable-helper {
+	border: 1px solid gray;
 }
 
 .entityreference-dragdrop-clear {
   clear:both;
+}
+
+.entityreference-dragdrop-label {
+  font-weight: bold;
+  padding: 9px 0 0 0;
+}
+
+.entityreference-dragdrop-message {
+  display: none;
+  color: red;
 }
