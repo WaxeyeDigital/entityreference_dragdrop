@@ -1,7 +1,7 @@
-﻿<?php
+<?php
 /**
  * @file
- * Provides a Drag & Drop widget for entity-reference fields
+ * Provides a Drag & Drop widget for entity-reference fields.
  */
 
 /**
@@ -24,7 +24,7 @@ function entityreference_dragdrop_field_widget_info() {
  */
 function entityreference_dragdrop_field_widget_form(&$form, &$form_state, $field, $instance, $langcode, $items, $delta, $element) {
   // If we have more than one element per page,
-  // this element-counter keeps them seperated
+  // this element-counter keeps them separated.
   static $ec = 0;
 
   drupal_add_library('system', 'ui.sortable');
@@ -32,7 +32,7 @@ function entityreference_dragdrop_field_widget_form(&$form, &$form_state, $field
   $handler = entityreference_get_selection_handler($field, $instance);
   $options = $handler->getReferencableEntities();
 
-  // Build an array of selected items in id=>label format
+  // Build an array of selected items in id=>label format.
   $selected = array();
   foreach ($items as $item) {
     foreach ($options as $bundle => $entities) {
@@ -42,30 +42,32 @@ function entityreference_dragdrop_field_widget_form(&$form, &$form_state, $field
     }
   }
 
-  // Build HTML to represent available options that have not been selected
+  // Build HTML to represent available options that have not been selected.
   $markup_available = '<ul data-ec="' . $ec . '" class="entityreference-dragdrop entityreference-dragdrop-available">';
   foreach ($options as $bundle => $entities) {
     foreach ($entities as $id => $label) {
-      if (!array_key_exists($id, $selected)) $markup_available .= '<li data-ec="' . $ec . '" data-id="' . $id .'">' . $label . '</li>';
+      if (!array_key_exists($id, $selected)) 
+				$markup_available .= '<li data-ec="' . $ec . '" data-id="' . $id . '">' . $label . '</li>';
     }
   }
   $markup_available .= '</ul>';
 
-  // Build HTML to represent selected items
-  $markup_selected  = '<ul data-ec="' . $ec . '" class="entityreference-dragdrop entityreference-dragdrop-selected">';
+  // Build HTML to represent selected items.
+  $markup_selected = '<ul data-ec="' . $ec . '" class="entityreference-dragdrop entityreference-dragdrop-selected">';
   foreach ($selected as $id => $label) {
     $markup_selected .=  '<li data-ec="' . $ec . '" data-id="' . $id . '">' . $label . '</li>';
   }
   $markup_selected  .= '</ul>';
-  
+
   $label = '<div class="entityreference-dragdrop-label">' . $instance['label'] . '</div>';
   $message = $field['cardinality'] == -1 ? '' : '<div class="entityreference-dragdrop-message" data-ec="' . $ec . '">' . t("This field cannot hold more than @card values.", array('@card' => $field['cardinality'])) . '</div>';
 
+	$header = '<div><div class="entityreference-dragdrop-list-header">' . t('Available entities') . '</div><div class="entityreference-dragdrop-list-header">' . t('Selected entities') . '</div></div>';
   $element += array(
     '#type' => 'hidden',
-    '#default_value' => implode(',',array_keys($selected)),
+    '#default_value' => implode(',', array_keys($selected)),
     '#element_validate' => array('entityreference_dragdrop_element_validate'),
-    '#suffix' => $label . '<div class="entityreference-dragdrop-widget-wrapper">' . $markup_available . $markup_selected . '</div>' . $message . '<div class="entityreference-dragdrop-clear"></div>',
+    '#suffix' => $label . '<div class="entityreference-dragdrop-widget-wrapper">' . $header . $markup_available . $markup_selected . '</div>' . $message . '<div class="entityreference-dragdrop-clear"></div>',
     '#attached' => array(
       'js' => array(drupal_get_path('module', 'entityreference_dragdrop') . '/entityreference_dragdrop.js'),
       'css' => array(drupal_get_path('module', 'entityreference_dragdrop') . '/entityreference_dragdrop.css'),
@@ -75,11 +77,11 @@ function entityreference_dragdrop_field_widget_form(&$form, &$form_state, $field
       'data-ec' => array($ec),
     ),
   );
-  
+
   drupal_add_js(array(
     'entityreference_dragdrop' => array(
       $ec => $field['cardinality'],
-    )
+    ),
   ), 'setting');
 
   // Increment the element-counter
@@ -88,14 +90,13 @@ function entityreference_dragdrop_field_widget_form(&$form, &$form_state, $field
   return $element;
 }
 
-
 /**
- * Formats the value array properly
+ * Formats the value array properly.
  */
 function entityreference_dragdrop_element_validate($element, &$form_state) {
   $value = array();
   if (!empty($element['#value'])) {
-    $ids = explode(',',$element['#value']);
+    $ids = explode(',', $element['#value']);
     $value = array();
 
     foreach ($ids as $id) {
