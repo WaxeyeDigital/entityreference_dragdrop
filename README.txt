@@ -4,8 +4,8 @@ h2. Description
 
 This allows the user to select an entity to reference using two side-by-side
 lists. User selects entities from the left-hand list and moves them to the
-right-hand list. The entities can also be re-arranged (stored in the field delta)
-by dragging them around.
+right-hand list. The entities can also be re-arranged (stored in the field
+delta) by dragging them around.
 
 h2. Requirements
 

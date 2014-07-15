@@ -12,6 +12,9 @@ function entityreference_dragdrop_field_widget_info() {
     'entityreference_dragdrop' => array(
       'label' => t('Drag & Drop'),
       'field types' => array('entityreference'),
+      'settings' => array(
+        'view_mode' => 'title',
+      ),
       'behaviors' => array(
         'multiple values' => FIELD_BEHAVIOR_CUSTOM,
       ),
@@ -26,39 +29,16 @@ function entityreference_dragdrop_field_widget_form(&$form, &$form_state, $field
   // If we have more than one element per page,
   // this element-counter keeps them separated.
   static $ec = 0;
-
   drupal_add_library('system', 'ui.sortable');
 
   $handler = entityreference_get_selection_handler($field, $instance);
   $options = $handler->getReferencableEntities();
 
-  // Build an array of selected items in id=>label format.
-  $selected = array();
-  foreach ($items as $item) {
-    foreach ($options as $bundle => $entities) {
-      if (array_key_exists($item['target_id'], $entities)) {
-        $selected[$item['target_id']] = $entities[$item['target_id']];
-      }
-    }
-  }
+  $selected = entityreference_dragdrop_get_selected_options($items, $options);
+  $available = entityreference_dragdrop_get_available_options($items, $options);
 
-  // Build HTML to represent available options that have not been selected.
-  $markup_available = '<ul data-ec="' . $ec . '" class="entityreference-dragdrop entityreference-dragdrop-available">';
-  foreach ($options as $bundle => $entities) {
-    foreach ($entities as $id => $label) {
-      if (!array_key_exists($id, $selected)) {
-        $markup_available .= '<li data-ec="' . $ec . '" data-id="' . $id . '">' . $label . '</li>';
-			}
-    }
-  }
-  $markup_available .= '</ul>';
-
-  // Build HTML to represent selected items.
-  $markup_selected = '<ul data-ec="' . $ec . '" class="entityreference-dragdrop entityreference-dragdrop-selected">';
-  foreach ($selected as $id => $label) {
-    $markup_selected .= '<li data-ec="' . $ec . '" data-id="' . $id . '">' . $label . '</li>';
-  }
-  $markup_selected  .= '</ul>';
+  $markup_available = entityreference_dragdrop_build_html($available, $field, $instance, $ec, array('entityreference-dragdrop-available'));
+  $markup_selected = entityreference_dragdrop_build_html($selected, $field, $instance, $ec, array('entityreference-dragdrop-selected'));
 
   $label = '<div class="entityreference-dragdrop-label">' . $instance['label'] . '</div>';
   $message = $field['cardinality'] == -1 ? '' : '<div class="entityreference-dragdrop-message" data-ec="' . $ec . '">' . t("This field cannot hold more than @card values.", array('@card' => $field['cardinality'])) . '</div>';
@@ -109,4 +89,109 @@ function entityreference_dragdrop_element_validate($element, &$form_state) {
 
   // Update the value of this element so the field can validate the product IDs.
   form_set_value($element, $value, $form_state);
+}
+
+/**
+ * Implements hook_field_widget_settings_form().
+ */
+function entityreference_dragdrop_field_widget_settings_form($field, $instance) {
+  $widget = $instance['widget'];
+  $settings = $widget['settings'];
+
+  $info = entity_get_info($field['settings']['target_type']);
+  $options = array(
+    'title' => t('Title'),
+    'default' => t('Default'),
+  );
+  foreach($info['view modes'] as $view_mode_id => $view_mode) {
+  if ($view_mode['custom settings']) {
+      $options += array(
+        $view_mode_id => t($view_mode['label']),
+      );
+     }
+  }
+
+  $form = array();
+
+  if ($widget['type'] == 'entityreference_dragdrop') {
+    $form['view_mode'] = array(
+      '#type' => 'select',
+      '#title' => t('View mode'),
+      '#default_value' => $settings['view_mode'],
+      '#options' => $options,
+      '#description' => t('Select one of available target entity view mode.'),
+    );
+  }
+
+  return $form;
+}
+
+/**
+ * Returns available options.
+ */
+function entityreference_dragdrop_get_available_options($items, $options) {
+  // Build an array of available items in id => label format.
+  $available = array();
+  foreach ($options as $bundle => $entities) {
+    foreach($entities as $id => $label) {
+      $is_available = TRUE;
+      foreach ($items as $item) {
+        if ($id == $item['target_id']) {
+          $is_available = FALSE;
+        }
+      }
+      if ($is_available) {
+        $available[$id] = array(
+          '#type' => 'markup',
+          '#markup' => $label,
+        );
+      }
+    }
+  }
+  return $available;
+}
+
+/**
+ * Returns selected options.
+ */
+function entityreference_dragdrop_get_selected_options($items, $options) {
+  // Build an array of selected items in id => label format.
+  $selected = array();
+  foreach ($items as $item) {
+    foreach ($options as $bundle => $entities) {
+      if (array_key_exists($item['target_id'], $entities)) {
+        $selected[$item['target_id']] = array(
+          '#type' => 'markup',
+          '#markup' => $entities[$item['target_id']],
+        );
+      }
+    }
+  }
+  return $selected;
+}
+
+/**
+ * Builds HTML for dragable list of items.
+ */
+function entityreference_dragdrop_build_html($options, $field, $instance, $ec, $classes = array()) {
+  $view_mode = $instance['widget']['settings']['view_mode'];
+  $target_type = $field['settings']['target_type'];
+
+  if ($view_mode != 'title' && !empty($options)) {
+    $entities = entity_load($target_type, array_keys($options));
+    $renderable_entities = entity_view($target_type, $entities, $view_mode);
+    foreach ($renderable_entities[$target_type] as $id => $entity) {
+      if (is_array($entity)) {
+        $options[$id] = $entity;
+      }
+    }
+  }
+
+  // Build HTML to represent options.
+  $html = '<ul data-ec="' . $ec . '" class="entityreference-dragdrop ' . implode(" ", $classes) . '">';
+  foreach ($options as $id => $item) {
+    $html .= '<li data-ec="' . $ec . '" data-id="' . $id . '">' . drupal_render($item) . '</li>';
+  }
+  $html .= '</ul>';
+  return $html;
 }

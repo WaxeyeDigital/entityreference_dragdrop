@@ -13,11 +13,11 @@
     if (Drupal.settings.entityreference_dragdrop[ec] != -1) {
       if (items.length > Drupal.settings.entityreference_dragdrop[ec]) {
         $(".entityreference-dragdrop-message[data-ec=" + ec + "]").show();
-        $(".entityreference-dragdrop-selected[data-ec=" + ec + "]").css("border", "2px solid red");
+        $(".entityreference-dragdrop-selected[data-ec=" + ec + "]").css("border", "1px solid red");
       }
       else {
         $(".entityreference-dragdrop-message[data-ec=" + ec + "]").hide();
-        $(".entityreference-dragdrop-selected[data-ec=" + ec + "]").css("border", "none");
+        $(".entityreference-dragdrop-selected[data-ec=" + ec + "]").css("border", "");
       }
     }
   }
