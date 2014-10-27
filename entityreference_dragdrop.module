@@ -14,6 +14,8 @@ function entityreference_dragdrop_field_widget_info() {
       'field types' => array('entityreference'),
       'settings' => array(
         'view_mode' => 'title',
+        'available_entities_label' => t('Available entities'),
+        'selected_entities_label' => t('Selected entities'),
       ),
       'behaviors' => array(
         'multiple values' => FIELD_BEHAVIOR_CUSTOM,
@@ -43,7 +45,7 @@ function entityreference_dragdrop_field_widget_form(&$form, &$form_state, $field
   $label = '<div class="entityreference-dragdrop-label">' . $instance['label'] . '</div>';
   $message = $field['cardinality'] == -1 ? '' : '<div class="entityreference-dragdrop-message" data-ec="' . $ec . '">' . t("This field cannot hold more than @card values.", array('@card' => $field['cardinality'])) . '</div>';
 
-  $header = '<div><div class="entityreference-dragdrop-list-header">' . t('Available entities') . '</div><div class="entityreference-dragdrop-list-header">' . t('Selected entities') . '</div></div>';
+  $header = '<div><div class="entityreference-dragdrop-list-header">' . $instance['widget']['settings']['available_entities_label'] . '</div><div class="entityreference-dragdrop-list-header">' . $instance['widget']['settings']['selected_entities_label'] . '</div></div>';
   $element += array(
     '#type' => 'hidden',
     '#default_value' => implode(',', array_keys($selected)),
@@ -120,6 +122,20 @@ function entityreference_dragdrop_field_widget_settings_form($field, $instance) 
       '#default_value' => $settings['view_mode'],
       '#options' => $options,
       '#description' => t('Select one of available target entity view mode.'),
+    );
+    
+    $form['available_entities_label'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Available entities label'),
+      '#default_value' => $settings['available_entities_label'],
+      '#description' => t('Type a label that will be displayed above block with available entities.')
+    );
+    
+    $form['selected_entities_label'] = array(
+      '#type' => 'textfield',
+      '#title' => t('Selected entities label'),
+      '#default_value' => $settings['selected_entities_label'],
+      '#description' => t('Type a label that will be displayed above block with selected entities.')
     );
   }
 
