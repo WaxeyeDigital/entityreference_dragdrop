@@ -2,7 +2,7 @@
   list-style-type: none;
   display: inline-block;
   background: #eee;
-  width: 300px;
+  width: 95%;
   height: 400px;
   overflow-x: hidden;
   overflow-y: auto;
@@ -23,8 +23,13 @@ ul.entityreference-dragdrop li {
   list-style-type: none;
 }
 
+ul.entityreference-dragdrop li:hover {
+  background: #ffb;
+}
+
 ul.entityreference-dragdrop li.ui-sortable-helper {
 	border: 1px solid gray;
+  background: #fe7;
 }
 
 .entityreference-dragdrop-clear {
@@ -42,8 +47,12 @@ ul.entityreference-dragdrop li.ui-sortable-helper {
 }
 
 .entityreference-dragdrop-list-header {
-	width: 300px;
 	margin: 0 11px 0 0;
 	font-weight: bold;
-	display: inline-block;
+}
+
+.entityreference-dragdrop-container-available,
+.entityreference-dragdrop-container-selected {
+  display: inline-block;
+  width: 50%;
 }
