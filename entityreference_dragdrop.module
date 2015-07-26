@@ -47,12 +47,11 @@ function entityreference_dragdrop_field_widget_form(&$form, &$form_state, $field
 
   $html_1 = '<div class="entityreference-dragdrop-container-available"><div class="entityreference-dragdrop-list-header">' . $instance['widget']['settings']['available_entities_label'] . '</div>';
   $html_2 = '</div><div class="entityreference-dragdrop-container-selected"><div class="entityreference-dragdrop-list-header">' . $instance['widget']['settings']['selected_entities_label'] . '</div>';
-  $html_3 = '</div></div>';
   $element += array(
     '#type' => 'hidden',
     '#default_value' => implode(',', array_keys($selected)),
     '#element_validate' => array('entityreference_dragdrop_element_validate'),
-    '#suffix' => $label . '<div class="entityreference-dragdrop-widget-wrapper">' . $html_1 . $markup_available . $html_2 . $markup_selected . $html_3 . '</div>' . $message . '<div class="entityreference-dragdrop-clear"></div>',
+    '#suffix' => $label . '<div class="entityreference-dragdrop-widget-wrapper">' . $html_1 . $markup_available . $html_2 . $markup_selected . '</div>' . $message . '<div class="entityreference-dragdrop-clear"></div>',
     '#attached' => array(
       'js' => array(drupal_get_path('module', 'entityreference_dragdrop') . '/entityreference_dragdrop.js'),
       'css' => array(drupal_get_path('module', 'entityreference_dragdrop') . '/entityreference_dragdrop.css'),
