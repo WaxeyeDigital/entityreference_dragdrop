@@ -2,8 +2,8 @@
 
 namespace Drupal\entityreference_dragdrop\Plugin\Field\FieldWidget;
 
-
-use Drupal\Core\Entity\EntityManagerInterface;
+use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityDisplayRepository;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Field\Plugin\Field\FieldWidget\OptionsWidgetBase;
@@ -36,9 +36,14 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     VIEW_MODE_DEFAULT = 'default'; // Display entity using default view mode.
 
   /**
-   * @var \Drupal\Core\Entity\EntityManagerInterface
+   * @var \Drupal\Core\Entity\EntityTypeManager
    */
-  protected $entity_manager;
+  protected $entityTypeManager;
+
+  /**
+   * @var \Drupal\Core\Entity\EntityDisplayRepository
+   */
+  protected $entityDisplayRepository;
 
   /**
    * EntityReferenceDragDropWidget constructor.
@@ -47,11 +52,13 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
    * @param \Drupal\Core\Field\FieldDefinitionInterface $field_definition
    * @param array $settings
    * @param array $third_party_settings
-   * @param \Drupal\Core\Entity\EntityManagerInterface $entity_manager
+   * @param \Drupal\Core\Entity\EntityTypeManager $entity_type_manager
+   * @param \Drupal\Core\Entity\EntityDisplayRepository $entity_display_repository
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityManagerInterface $entity_manager = NULL) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, EntityTypeManager $entity_type_manager, EntityDisplayRepository $entity_display_repository) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings);
-    $this->entity_manager = $entity_manager;
+    $this->entityTypeManager = $entity_type_manager;
+    $this->entityDisplayRepository = $entity_display_repository;
   }
 
   /**
@@ -64,7 +71,8 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
       $configuration['field_definition'],
       $configuration['settings'],
       $configuration['third_party_settings'],
-      $container->get('entity.manager')
+      $container->get('entity_type.manager'),
+      $container->get('entity_display.repository')
     );
   }
 
@@ -233,7 +241,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     $entities = array();
 
     if ($view_mode !== static::VIEW_MODE_TITLE) {
-      $entities = $this->entity_manager->getStorage($target_type_id)->loadMultiple(array_keys($options));
+      $entities = $this->entityTypeManager->getStorage($target_type_id)->loadMultiple(array_keys($options));
     }
 
     foreach ($options as $id => $entity_title) {
@@ -244,7 +252,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
         ),
       );
       if ($view_mode !== static::VIEW_MODE_TITLE) {
-        $item += $this->entity_manager->getViewBuilder($target_type_id)->view($entities[$id]);
+        $item += $this->entityTypeManager->getViewBuilder($target_type_id)->view($entities[$id]);
       }
       else {
         $item += array(
@@ -309,7 +317,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
    */
   protected function viewModeOptions() {
     $target_type_id = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('target_type');
-    $view_modes = $this->entity_manager->getViewModes($target_type_id);
+    $view_modes = $this->entityDisplayRepository->getViewModes($target_type_id);
     $options = array(
       static::VIEW_MODE_TITLE => $this->t('Title'),
     );
