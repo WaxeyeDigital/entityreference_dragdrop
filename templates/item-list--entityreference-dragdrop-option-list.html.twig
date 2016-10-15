@@ -23,7 +23,7 @@
 {% if context.list_style %}
   {%- set attributes = attributes.addClass('item-list__' ~ context.list_style) %}
 {% endif %}
-<div{{ wrapper_attributes.addClass('item-list') }}>
+<div {{ wrapper_attributes.addClass('item-list') }}>
   {% if not items and empty %}
     {{- empty -}}
   {% endif %}

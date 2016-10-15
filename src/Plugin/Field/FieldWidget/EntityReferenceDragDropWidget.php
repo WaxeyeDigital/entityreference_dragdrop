@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: sergei
- * Date: 03.01.16
- * Time: 18:29
- */
 
 namespace Drupal\entityreference_dragdrop\Plugin\Field\FieldWidget;
 
@@ -35,9 +29,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class EntityReferenceDragDropWidget extends OptionsWidgetBase implements ContainerFactoryPluginInterface {
 
   /**
-   * Out-of-box available view modes for entity item in select lists.
+   * View modes for entity item in select lists available out-of-the-box.
    */
-  const VIEW_MODE_TITLE = 'title', // Display only entity title.
+  const
+    VIEW_MODE_TITLE = 'title', // Display only entity title.
     VIEW_MODE_DEFAULT = 'default'; // Display entity using default view mode.
 
   /**
@@ -73,6 +68,9 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     );
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public static function defaultSettings() {
     return array(
       'view_mode' => 'title',
@@ -81,6 +79,9 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     ) + parent::defaultSettings();
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function settingsForm(array $form, FormStateInterface $form_state) {
     $element['view_mode'] = array(
       '#type' => 'select',
@@ -106,6 +107,9 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     return $element;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function settingsSummary() {
     $summary = array();
     $view_mode = $this->viewModeOptions()[$this->getSetting('view_mode')];
@@ -164,6 +168,9 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     return $element;
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
     return explode(',', $values['target_id']);
   }
@@ -188,6 +195,12 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     return $selected_options;
   }
 
+  /**
+   * Gets a list of available entities for the field.
+   *
+   * @param \Drupal\Core\Field\FieldItemListInterface $items
+   * @return array
+   */
   protected function getAvailableOptions(FieldItemListInterface $items) {
     // We need to check against a flat list of options.
     $flat_options = OptGroup::flattenOptions($this->getOptions($items->getEntity()));
@@ -203,6 +216,16 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     return $available_options;
   }
 
+  /**
+   * Converts list of options to renderable array.
+   *
+   * @param array $options
+   * @param $key
+   * @param $list_title
+   * @param array $classes
+   * @param array $wrapper_classes
+   * @return array
+   */
   protected function optionsToRenderableArray(array $options, $key, $list_title, array $classes = array(), array $wrapper_classes = array()) {
     $view_mode = $this->getSetting('view_mode');
     $target_type_id = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('target_type');
@@ -245,6 +268,13 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     );
   }
 
+  /**
+   * Converts list of selected options to renderable array.
+   *
+   * @param array $options
+   * @param $key
+   * @return array
+   */
   protected function selectedOptionsToRenderableArray(array $options, $key) {
     return $this->optionsToRenderableArray(
       $options,
@@ -255,6 +285,13 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     );
   }
 
+  /**
+   * Converts list of available options to renderable array.
+   *
+   * @param array $options
+   * @param $key
+   * @return array
+   */
   protected function availableOptionsToRenderableArray(array $options, $key) {
     return $this->optionsToRenderableArray(
       $options,
@@ -265,6 +302,11 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     );
   }
 
+  /**
+   * Gets view mode options.
+   *
+   * @return array
+   */
   protected function viewModeOptions() {
     $target_type_id = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('target_type');
     $view_modes = $this->entity_manager->getViewModes($target_type_id);
