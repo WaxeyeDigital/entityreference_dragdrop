@@ -81,7 +81,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
    */
   public static function defaultSettings() {
     return array(
-      'view_mode' => 'title',
+      'view_mode' => static::VIEW_MODE_TITLE,
       'available_entities_label' => t('Available entities'),
       'selected_entities_label' => t('Selected entities'),
     ) + parent::defaultSettings();
