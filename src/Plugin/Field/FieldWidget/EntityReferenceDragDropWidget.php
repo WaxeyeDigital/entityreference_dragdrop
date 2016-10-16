@@ -47,6 +47,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
 
   /**
    * EntityReferenceDragDropWidget constructor.
+   *
    * @param string $plugin_id
    * @param mixed $plugin_definition
    * @param \Drupal\Core\Field\FieldDefinitionInterface $field_definition
@@ -149,7 +150,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     if ($cardinality != -1) {
       $element['message'] = array(
         '#markup' => '<div class="entityreference-dragdrop-message" data-key="' . $key . '">'
-          . $this->t('This field cannot hold more than @card values.', array('@card' => $cardinality)) . '</div>',
+          . $this->formatPlural($cardinality, 'This field cannot hold more than 1 value.', 'This field cannot hold more than @count values.') . '</div>',
       );
     }
     $element['available'] = $this->availableOptionsToRenderableArray($available, $key);
