@@ -189,7 +189,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
    * {@inheritdoc}
    */
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
-    return explode(',', $values['target_id']);
+    return empty($values['target_id']) ? array() : explode(',', $values['target_id']);
   }
 
   /**
