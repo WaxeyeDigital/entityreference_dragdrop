@@ -42,6 +42,27 @@
           update: Drupal.entityreference_dragdrop.update
         });
       });
+
+      $('.entityreference-dragdrop-filter').once('entityreference-dragdrop').each(function() {
+        $(this).bind('keyup paste', function() {
+          var $this = $(this);
+          var val = $this.val().toLowerCase();
+          if (val != '') {
+            $this.parents('.entityreference-dragdrop-container').find('li').each(function(i, elem) {
+              var $elem = $(elem);
+              if ($elem.data('label').toLowerCase().indexOf(val) >= 0) {
+                $elem.show();
+              }
+              else {
+                $elem.hide();
+              }
+            });
+          }
+          else {
+            $this.parents('.entityreference-dragdrop-container').find('li').show();
+          }
+        });
+      });
     }
   };
 })(jQuery);

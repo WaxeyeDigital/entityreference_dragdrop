@@ -31,6 +31,10 @@
   background: #fe7;
 }
 
+.entityreference-dragdrop-filter {
+  width: 95%;
+}
+
 .entityreference-dragdrop-clear {
   clear:both;
 }

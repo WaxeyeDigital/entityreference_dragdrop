@@ -1,12 +1,61 @@
 <?php
 
+use Drupal\Core\Template\Attribute;
+
 /**
  * Implements hook_theme().
  */
 function entityreference_dragdrop_theme($existing, $type, $theme, $path) {
   return array(
-    'item_list__entityreference_dragdrop_option_list' => array(
-      'base hook' => 'item_list',
+    'entityreference_dragdrop_options_list' => array(
+      'variables' => array(
+        'items' => array(),
+        'title' => '',
+        'wrapper_attributes' => array(),
+        'attributes' => array(),
+        'display_filter' => 0,
+      ),
+    ),
+  );
+}
+
+/**
+ * Prepares variables for entityreference_dragdrop options list template.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - items: An array of items to be displayed in the list. Each item can be
+ *     either a string or a render array. If #type, #theme, or #markup
+ *     properties are not specified for child render arrays, they will be
+ *     inherited from the parent list, allowing callers to specify larger
+ *     nested lists without having to explicitly specify and repeat the
+ *     render properties for all nested child lists.
+ *   - title: A title to be prepended to the list.
+ *   - wrapper_attributes: HTML attributes to be applied to the list wrapper.
+ */
+function template_preprocess_entityreference_dragdrop_options_list(&$variables) {
+  $variables['wrapper_attributes'] = new Attribute($variables['wrapper_attributes']);
+  foreach ($variables['items'] as &$item) {
+    $attributes = array();
+    // If the item value is an array, then it is a render array.
+    if (is_array($item)) {
+      // List items support attributes via the '#wrapper_attributes' property.
+      if (isset($item['#wrapper_attributes'])) {
+        $attributes = $item['#wrapper_attributes'];
+      }
+    }
+
+    // Set the item's value and attributes for the template.
+    $item = array(
+      'value' => $item,
+      'attributes' => new Attribute($attributes),
+    );
+  }
+
+  $variables['filter'] = !$variables['display_filter'] ? array() : array(
+    '#type' => 'textfield',
+    '#attributes' => array(
+      'class' => array('entityreference-dragdrop-filter'),
     ),
   );
 }

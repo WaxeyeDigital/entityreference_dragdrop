@@ -85,6 +85,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
       'view_mode' => static::VIEW_MODE_TITLE,
       'available_entities_label' => t('Available entities'),
       'selected_entities_label' => t('Selected entities'),
+      'display_filter' => 0,
     ) + parent::defaultSettings();
   }
 
@@ -113,6 +114,12 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
       '#description' => t('Enter a label that will be displayed above block with selected entities.')
     );
 
+    $element['display_filter'] = array(
+      '#type' => 'checkbox',
+      '#title' => $this->t('Display item filter'),
+      '#default_value' => $this->getSetting('display_filter'),
+    );
+
     return $element;
   }
 
@@ -125,6 +132,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     $summary[] = $this->t('View mode: @view_mode', array('@view_mode' => $view_mode));
     $summary[] = $this->t('Available entities label: @label', array('@label' => $this->getSetting('available_entities_label')));
     $summary[] = $this->t('Selected entities label: @label', array('@label' => $this->getSetting('selected_entities_label')));
+    $summary[] = $this->t('Display filter: @filter', array('@filter' => $this->getSetting('display_filter') ? $this->t('Yes') : $this->t('No')));
 
     return $summary;
   }
@@ -250,6 +258,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
         '#wrapper_attributes' => array(
           'data-key' => $key,
           'data-id' => $id,
+          'data-label' => $entity_title,
         ),
       );
       if ($view_mode !== static::VIEW_MODE_TITLE) {
@@ -264,9 +273,10 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     }
 
     return array(
-      '#theme' => 'item_list__entityreference_dragdrop_option_list',
+      '#theme' => 'entityreference_dragdrop_options_list',
       '#items' => $items,
       '#title' => $list_title,
+      '#display_filter' => $this->getSetting('display_filter'),
       '#attributes' => array(
         'data-key' => $key,
         'class' => array_merge(array('entityreference-dragdrop'), $classes),
@@ -328,4 +338,5 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
 
     return $options;
   }
+
 }
