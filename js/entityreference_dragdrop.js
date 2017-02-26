@@ -1,6 +1,6 @@
 (function($){
   
-  Drupal.entityreference_dragdrop = {};
+  Drupal.entityreference_dragdrop = Drupal.entityreference_dragdrop ? Drupal.entityreference_dragdrop : {};
   
   Drupal.entityreference_dragdrop.update = function (event, ui) {
     var items = [];
@@ -20,20 +20,27 @@
         $(".entityreference-dragdrop-selected[data-key=" + key + "]").css("border", "");
       }
     }
-  }
+  };
   
   Drupal.behaviors.entityreference_dragdrop = {
     attach: function() {
-      var $avail = $(".entityreference-dragdrop-available");
-      var $select = $(".entityreference-dragdrop-selected");
+      var $avail = $(".entityreference-dragdrop-available"),
+        $select = $(".entityreference-dragdrop-selected");
 
-      $avail.sortable({
-        connectWith: "ul.entityreference-dragdrop"
+
+      $avail.once('entityreference-dragdrop').each(function () {
+        var key = $(this).data('key');
+        $(this).sortable({
+          connectWith: 'ul.entityreference-dragdrop[data-key=' + key + ']'
+        });
       });
 
-      $select.sortable({
-        connectWith: "ul.entityreference-dragdrop",
-        update: Drupal.entityreference_dragdrop.update
+      $select.once('entityreference-dragdrop').each(function() {
+        var key = $(this).data('key');
+        $(this).sortable({
+          connectWith: "ul.entityreference-dragdrop[data-key=" + key + ']',
+          update: Drupal.entityreference_dragdrop.update
+        });
       });
     }
   };
