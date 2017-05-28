@@ -167,7 +167,6 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     $element['target_id'] = array(
       '#type' => 'hidden',
       '#default_value' => implode(',', array_keys($selected)),
-      '#element_validate' => array('entityreference_dragdrop_element_validate'),
       '#attached' => array(
         'library' => array('entityreference_dragdrop/init'),
         'drupalSettings' => array(
