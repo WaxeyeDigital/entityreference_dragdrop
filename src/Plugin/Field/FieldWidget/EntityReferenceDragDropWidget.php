@@ -152,8 +152,10 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     $available = $this->getAvailableOptions($items);
 
     $element['label'] = array(
-      '#markup' => '<div class="entityreference-dragdrop-label">'
-        . $this->fieldDefinition->getLabel() . '</div>',
+      '#type' => 'item',
+      '#title' => $element['#title'],
+      '#required' => $element['#required'],
+      '#value' => 'just some value so #required does not trigger validation error.'
     );
     if ($cardinality != -1) {
       $element['message'] = array(
