@@ -181,6 +181,13 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
       ),
     );
 
+    if ($element['#description']) {
+      $element['description'] = array(
+        '#type' => 'item',
+        '#description' => $element['#description'],
+      );
+    }
+
     return $element;
   }
 
