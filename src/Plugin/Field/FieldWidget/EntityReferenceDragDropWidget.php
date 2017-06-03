@@ -28,12 +28,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class EntityReferenceDragDropWidget extends OptionsWidgetBase implements ContainerFactoryPluginInterface {
 
-  /**
-   * View modes for entity item in select lists available out-of-the-box.
-   */
-  const
-    VIEW_MODE_TITLE = 'title', // Display only entity title.
-    VIEW_MODE_DEFAULT = 'default'; // Display entity using default view mode.
+  const VIEW_MODE_TITLE = 'title'; // Display only entity title.
 
   /**
    * @var \Drupal\Core\Entity\EntityTypeManager
@@ -81,44 +76,44 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
    * {@inheritdoc}
    */
   public static function defaultSettings() {
-    return array(
+    return [
       'view_mode' => static::VIEW_MODE_TITLE,
       'available_entities_label' => t('Available entities'),
       'selected_entities_label' => t('Selected entities'),
       'display_filter' => 0,
-    ) + parent::defaultSettings();
+    ] + parent::defaultSettings();
   }
 
   /**
    * {@inheritdoc}
    */
   public function settingsForm(array $form, FormStateInterface $form_state) {
-    $element['view_mode'] = array(
+    $element['view_mode'] = [
       '#type' => 'select',
       '#title' => $this->t('View mode'),
       '#options' => $this->viewModeOptions(),
       '#default_value' => $this->getSetting('view_mode'),
-    );
+    ];
 
-    $element['available_entities_label'] = array(
+    $element['available_entities_label'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Available entities label'),
       '#default_value' => $this->getSetting('available_entities_label'),
-      '#description' => t('Enter a label that will be displayed above block with available entities.')
-    );
+      '#description' => $this->t('Enter a label that will be displayed above block with available entities.')
+    ];
 
-    $element['selected_entities_label'] = array(
+    $element['selected_entities_label'] = [
       '#type' => 'textfield',
-      '#title' => $this->t('Selected entities label'),
+      '#title' => $this->t('S-elected entities label'),
       '#default_value' => $this->getSetting('selected_entities_label'),
-      '#description' => t('Enter a label that will be displayed above block with selected entities.')
-    );
+      '#description' => $this->t('Enter a label that will be displayed above block with selected entities.')
+    ];
 
-    $element['display_filter'] = array(
+    $element['display_filter'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Display item filter'),
       '#default_value' => $this->getSetting('display_filter'),
-    );
+    ];
 
     return $element;
   }
@@ -127,12 +122,12 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
    * {@inheritdoc}
    */
   public function settingsSummary() {
-    $summary = array();
+    $summary = [];
     $view_mode = $this->viewModeOptions()[$this->getSetting('view_mode')];
-    $summary[] = $this->t('View mode: @view_mode', array('@view_mode' => $view_mode));
-    $summary[] = $this->t('Available entities label: @label', array('@label' => $this->getSetting('available_entities_label')));
-    $summary[] = $this->t('Selected entities label: @label', array('@label' => $this->getSetting('selected_entities_label')));
-    $summary[] = $this->t('Display filter: @filter', array('@filter' => $this->getSetting('display_filter') ? $this->t('Yes') : $this->t('No')));
+    $summary[] = $this->t('View mode: @view_mode', ['@view_mode' => $view_mode]);
+    $summary[] = $this->t('Available entities label: @label', ['@label' => $this->getSetting('available_entities_label')]);
+    $summary[] = $this->t('Selected entities label: @label', ['@label' => $this->getSetting('selected_entities_label')]);
+    $summary[] = $this->t('Display filter: @filter', ['@filter' => $this->getSetting('display_filter') ? $this->t('Yes') : $this->t('No')]);
 
     return $summary;
   }
@@ -151,43 +146,43 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     $selected = $this->getSelectedOptions($items);
     $available = $this->getAvailableOptions($items);
 
-    $element['label'] = array(
+    $element['label'] = [
       '#type' => 'item',
       '#title' => $element['#title'],
       '#required' => $element['#required'],
       '#value' => 'just some value so #required does not trigger validation error.'
-    );
+    ];
     if ($cardinality != -1) {
-      $element['message'] = array(
+      $element['message'] = [
         '#markup' => '<div class="entityreference-dragdrop-message" data-key="' . $key . '">'
           . $this->formatPlural($cardinality, 'This field cannot hold more than 1 value.', 'This field cannot hold more than @count values.') . '</div>',
-      );
+      ];
     }
     $element['available'] = $this->availableOptionsToRenderableArray($available, $key);
     $element['selected'] = $this->selectedOptionsToRenderableArray($selected, $key);
 
-    $element['target_id'] = array(
+    $element['target_id'] = [
       '#type' => 'hidden',
       '#default_value' => implode(',', array_keys($selected)),
-      '#attached' => array(
-        'library' => array('entityreference_dragdrop/init'),
-        'drupalSettings' => array(
-          'entityreference_dragdrop' => array(
+      '#attached' => [
+        'library' => ['entityreference_dragdrop/init'],
+        'drupalSettings' => [
+          'entityreference_dragdrop' => [
             $key => $this->fieldDefinition->getFieldStorageDefinition()->getCardinality(),
-          ),
-        ),
-      ),
-      '#attributes' => array(
-        'class' => array('entityreference-dragdrop-values'),
-        'data-key' => array($key),
-      ),
-    );
+          ],
+        ],
+      ],
+      '#attributes' => [
+        'class' => ['entityreference-dragdrop-values'],
+        'data-key' => $key,
+      ],
+    ];
 
     if ($element['#description']) {
-      $element['description'] = array(
+      $element['description'] = [
         '#type' => 'item',
         '#description' => $element['#description'],
-      );
+      ];
     }
 
     return $element;
@@ -197,7 +192,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
    * {@inheritdoc}
    */
   public function massageFormValues(array $values, array $form, FormStateInterface $form_state) {
-    return empty($values['target_id']) ? array() : explode(',', $values['target_id']);
+    return empty($values['target_id']) ? [] : explode(',', $values['target_id']);
   }
 
   /**
@@ -207,7 +202,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     // We need to check against a flat list of options.
     $flat_options = OptGroup::flattenOptions($this->getOptions($items->getEntity()));
 
-    $selected_options = array();
+    $selected_options = [];
     foreach ($items as $item) {
       $id = $item->{$this->column};
       // Keep the value if it actually is in the list of options (needs to be
@@ -231,7 +226,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
     $flat_options = OptGroup::flattenOptions($this->getOptions($items->getEntity()));
     $selected_options = $this->getSelectedOptions($items);
 
-    $available_options = array();
+    $available_options = [];
     foreach ($flat_options as $id => $option) {
       if (!in_array($option, $selected_options)) {
         $available_options[$id] = $option;
@@ -251,52 +246,52 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
    * @param array $wrapper_classes
    * @return array
    */
-  protected function optionsToRenderableArray(array $options, $key, $list_title, array $classes = array(), array $wrapper_classes = array()) {
+  protected function optionsToRenderableArray(array $options, $key, $list_title, array $classes = [], array $wrapper_classes = []) {
     // view mode is of the form 'node.full_content'
     $view_mode_name = $this->getSetting('view_mode');
     $view_mode_name = explode('.', $view_mode_name);
     $view_mode = end($view_mode_name);
 
     $target_type_id = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('target_type');
-    $items = array();
-    $entities = array();
+    $items = [];
+    $entities = [];
 
     if ($view_mode !== static::VIEW_MODE_TITLE) {
       $entities = $this->entityTypeManager->getStorage($target_type_id)->loadMultiple(array_keys($options));
     }
 
     foreach ($options as $id => $entity_title) {
-      $item = array(
-        '#wrapper_attributes' => array(
+      $item = [
+        '#wrapper_attributes' => [
           'data-key' => $key,
           'data-id' => $id,
           'data-label' => $entity_title,
-        ),
-      );
+        ],
+      ];
       if ($view_mode !== static::VIEW_MODE_TITLE) {
         $item += $this->entityTypeManager->getViewBuilder($target_type_id)->view($entities[$id], $view_mode);
       }
       else {
-        $item += array(
+        $item += [
           '#markup' => $options[$id],
-        );
+        ];
       }
       $items[] = $item;
     }
 
-    return array(
+    return [
       '#theme' => 'entityreference_dragdrop_options_list',
       '#items' => $items,
       '#title' => $list_title,
       '#display_filter' => $this->getSetting('display_filter'),
-      '#attributes' => array(
+      '#attributes' => [
         'data-key' => $key,
-        'class' => array_merge(array('entityreference-dragdrop'), $classes),
-      ),
-      '#wrapper_attributes' => array(
-        'class' => array_merge(array('entityreference-dragdrop-container'), $wrapper_classes),
-      ),
-    );
+        'class' => array_merge(['entityreference-dragdrop'], $classes),
+      ],
+      '#wrapper_attributes' => [
+        'class' => array_merge(['entityreference-dragdrop-container'], $wrapper_classes),
+      ],
+    ];
   }
 
   /**
@@ -307,13 +302,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
    * @return array
    */
   protected function selectedOptionsToRenderableArray(array $options, $key) {
-    return $this->optionsToRenderableArray(
-      $options,
-      $key,
-      $this->getSetting('selected_entities_label'),
-      array('entityreference-dragdrop-selected'),
-      array('entityreference-dragdrop-container-selected')
-    );
+    return $this->optionsToRenderableArray($options, $key, $this->getSetting('selected_entities_label'), ['entityreference-dragdrop-selected'], ['entityreference-dragdrop-container-selected']);
   }
 
   /**
@@ -324,13 +313,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
    * @return array
    */
   protected function availableOptionsToRenderableArray(array $options, $key) {
-    return $this->optionsToRenderableArray(
-      $options,
-      $key,
-      $this->getSetting('available_entities_label'),
-      array('entityreference-dragdrop-available'),
-      array('entityreference-dragdrop-container-available')
-    );
+    return $this->optionsToRenderableArray($options, $key, $this->getSetting('available_entities_label'), ['entityreference-dragdrop-available'], ['entityreference-dragdrop-container-available']);
   }
 
   /**
@@ -341,9 +324,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
   protected function viewModeOptions() {
     $target_type_id = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('target_type');
     $view_modes = $this->entityDisplayRepository->getViewModes($target_type_id);
-    $options = array(
-      static::VIEW_MODE_TITLE => $this->t('Title'),
-    );
+    $options = [static::VIEW_MODE_TITLE => $this->t('Title')];
     foreach ($view_modes as $view_mode) {
       $options[$view_mode['id']] = $view_mode['label'];
     }
