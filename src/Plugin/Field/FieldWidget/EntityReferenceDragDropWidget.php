@@ -252,7 +252,11 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
    * @return array
    */
   protected function optionsToRenderableArray(array $options, $key, $list_title, array $classes = array(), array $wrapper_classes = array()) {
-    $view_mode = $this->getSetting('view_mode');
+    // view mode is of the form 'node.full_content'
+    $view_mode_name = $this->getSetting('view_mode');
+    $view_mode_name = explode('.', $view_mode_name);
+    $view_mode = end($view_mode_name);
+
     $target_type_id = $this->fieldDefinition->getFieldStorageDefinition()->getSetting('target_type');
     $items = array();
     $entities = array();
@@ -270,7 +274,7 @@ class EntityReferenceDragDropWidget extends OptionsWidgetBase implements Contain
         ),
       );
       if ($view_mode !== static::VIEW_MODE_TITLE) {
-        $item += $this->entityTypeManager->getViewBuilder($target_type_id)->view($entities[$id]);
+        $item += $this->entityTypeManager->getViewBuilder($target_type_id)->view($entities[$id], $view_mode);
       }
       else {
         $item += array(
