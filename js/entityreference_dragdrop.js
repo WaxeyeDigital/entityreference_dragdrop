@@ -48,7 +48,7 @@
           var $this = $(this);
           var val = $this.val().toLowerCase();
           if (val != '') {
-            $this.parents('.entityreference-dragdrop-container').find('li').each(function(i, elem) {
+            $this.parents('.entityreference-dragdrop-container').find('li.ui-sortable-handle').each(function(i, elem) {
               var $elem = $(elem);
               if ($elem.data('label').toLowerCase().indexOf(val) >= 0) {
                 $elem.show();
