@@ -51,16 +51,26 @@
 
       $avail.once('entityreference-dragdrop').each(function () {
         var key = $(this).data('key');
-        $(this).sortable({
-          connectWith: 'ul.entityreference-dragdrop[data-key=' + key + ']'
+        var $sortableAvail = $(this).sortable({
+          connectWith: 'ul.entityreference-dragdrop[data-key=' + key + ']',
+          items: '.sorting-initialize'
+        });
+        $sortableAvail.find('li[data-key=' + key + ']').one('mouseenter', function(){
+          $(this).addClass('sorting-initialize');
+          $sortableAvail.sortable('refresh');
         });
       });
 
       $select.once('entityreference-dragdrop').each(function() {
         var key = $(this).data('key');
-        $(this).sortable({
+        var $sortableSelect = $(this).sortable({
           connectWith: "ul.entityreference-dragdrop[data-key=" + key + ']',
+          items: '.sorting-initialize',
           update: Drupal.entityreference_dragdrop.update
+        });
+        $sortableSelect.find('li[data-key=' + key + ']').one('mouseenter', function() {
+          $(this).addClass('sorting-initialize');
+          $sortableSelect.sortable('refresh');
         });
       });
 
