@@ -1,16 +1,16 @@
-(function($){
-  
+(function ($, Sortable) {
+
   Drupal.entityreference_dragdrop = Drupal.entityreference_dragdrop ? Drupal.entityreference_dragdrop : {};
 
   // Used a 'update' event handler for sortable plugin.
-  Drupal.entityreference_dragdrop.update = function (event, ui) {
+  Drupal.entityreference_dragdrop.update = function (event) {
     var items = [];
     var key = $(event.target).attr("data-key");
     $(".entityreference-dragdrop-selected[data-key=" + key + "] li[data-key=" + key + "]").each(function(index) {
       items.push($(this).attr('data-id'));
     });
     $("input.entityreference-dragdrop-values[data-key=" + key +"]").val(items.join(','));
-    
+
     if (drupalSettings.entityreference_dragdrop[key] != -1) {
       if (items.length > drupalSettings.entityreference_dragdrop[key]) {
         $(".entityreference-dragdrop-message[data-key=" + key + "]").show();
@@ -42,35 +42,27 @@
       $input.parents('.entityreference-dragdrop-container').find('li').show();
     }
   };
-  
+
   Drupal.behaviors.entityreference_dragdrop = {
     attach: function() {
       var $avail = $(".entityreference-dragdrop-available"),
         $select = $(".entityreference-dragdrop-selected");
 
 
+      // Prepare available entities' sortable container.
       $avail.once('entityreference-dragdrop').each(function () {
         var key = $(this).data('key');
-        var $sortableAvail = $(this).sortable({
-          connectWith: 'ul.entityreference-dragdrop[data-key=' + key + ']',
-          items: '.sorting-initialize'
-        });
-        $sortableAvail.find('li[data-key=' + key + ']').one('mouseenter', function(){
-          $(this).addClass('sorting-initialize');
-          $sortableAvail.sortable('refresh');
+        var $sortableAvail = Sortable.create(this, {
+          group: 'ul.entityreference-dragdrop[data-key=' + key + ']'
         });
       });
 
+      // Prepare sortable container selected entities'.
       $select.once('entityreference-dragdrop').each(function() {
         var key = $(this).data('key');
-        var $sortableSelect = $(this).sortable({
-          connectWith: "ul.entityreference-dragdrop[data-key=" + key + ']',
-          items: '.sorting-initialize',
-          update: Drupal.entityreference_dragdrop.update
-        });
-        $sortableSelect.find('li[data-key=' + key + ']').one('mouseenter', function() {
-          $(this).addClass('sorting-initialize');
-          $sortableSelect.sortable('refresh');
+        var $sortableSelect = Sortable.create(this, {
+          group: 'ul.entityreference-dragdrop[data-key=' + key + ']',
+          onSort: Drupal.entityreference_dragdrop.update
         });
       });
 
@@ -82,4 +74,4 @@
       });
     }
   };
-})(jQuery);
+})(jQuery, Sortable);
